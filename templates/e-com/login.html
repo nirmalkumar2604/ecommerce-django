@@ -1,0 +1,45 @@
+{% extends "e-com/base.html" %}
+{% block title %}Login | NK Mart{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-card">
+    <h2 class="login-title">Welcome Back 👋</h2>
+    <p class="login-subtitle">Login to your NK Mart account</p>
+
+    <form id="loginForm" class="login-form">
+      <input type="text" id="username" placeholder="Enter your username" required />
+      <input type="password" id="password" placeholder="Enter your password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="login-links">
+      <a href="/ui/forget_password/">Forgot Password?</a>
+      <span> | </span>
+      <a href="/ui/register/">Create Account</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("/api/login/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert("✅ Login successful!");
+    window.location.href = "/ui/product_list/";
+  } else {
+    alert("❌ " + (data.error || "Invalid credentials"));
+  }
+});
+</script>
+{% endblock %}

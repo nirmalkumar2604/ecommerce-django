@@ -1,0 +1,61 @@
+{% extends "e-com/base.html" %}
+{% block title %}Add Product | NK Mart{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-card" style="max-width: 600px;">
+    <h2 class="login-title">Add New Product 🛍️</h2>
+    <p class="login-subtitle">Fill out the details below to list your product.</p>
+
+    <form id="addProductForm" class="login-form">
+      <input type="text" id="product_name" placeholder="Product Name" required />
+      <input type="text" id="description" placeholder="Product Description" />
+      <input type="number" id="price" placeholder="Price (₹)" required />
+      <input type="number" id="stock" placeholder="Available Stock" value="0" />
+      <input type="url" id="image_url" placeholder="Image URL (optional)" />
+
+      <button type="submit">Add Product</button>
+    </form>
+
+    <div class="login-links">
+      <a href="/ui/product_list/">← Back to Product List</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("addProductForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const name = document.getElementById("product_name").value.trim();
+  const description = document.getElementById("description").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const stock = document.getElementById("stock").value.trim() || 0;
+  const image = document.getElementById("image_url").value.trim();
+
+  if (!name || !price) {
+    alert("❌ Product name and price are required.");
+    return;
+  }
+
+  try {
+    const res = await fetch("/api/add_product/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description, price, stock, image }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Product added successfully!");
+      window.location.href = "/ui/product_list/";
+    } else {
+      alert("❌ " + (data.error || "Failed to add product"));
+    }
+  } catch (err) {
+    alert("⚠️ Network error, please try again.");
+  }
+});
+</script>
+{% endblock %}

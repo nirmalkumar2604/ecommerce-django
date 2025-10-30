@@ -1,0 +1,45 @@
+{% extends "e-com/base.html" %}
+{% block title %}Verify OTP | NK Mart{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-card">
+    <h2 class="login-title">Verify OTP 🔑</h2>
+    <p class="login-subtitle">
+      Enter the 6-digit OTP sent to your registered email address.
+    </p>
+
+    <form id="otpForm" class="login-form">
+      <input type="email" id="email" placeholder="Enter your email" required />
+      <input type="text" id="otp" placeholder="Enter 6-digit OTP" maxlength="6" required />
+      <button type="submit">Verify OTP</button>
+    </form>
+
+    <div class="login-links">
+      <a href="/ui/forget_password/">Resend OTP</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById("otpForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const otp = document.getElementById("otp").value;
+
+  const res = await fetch("/api/verify_otp/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, otp }),
+  });
+
+  const data = await res.json();
+  if (res.ok) {
+    alert("✅ OTP verified successfully!");
+    window.location.href = "/ui/reset_password/";
+  } else {
+    alert("❌ " + (data.error || "Invalid or expired OTP"));
+  }
+});
+</script>
+{% endblock %}

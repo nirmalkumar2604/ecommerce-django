@@ -1,0 +1,49 @@
+{% extends "e-com/base.html" %}
+{% block title %}Order Details | NK Mart{% endblock %}
+
+{% block content %}
+<div class="orders-container">
+  <h2 class="section-title">🧾 Order Details</h2>
+  <div id="orderDetails" class="order-detail"></div>
+</div>
+
+<script>
+async function loadOrderDetails() {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("id");
+  if (!orderId) return alert("❌ Order ID missing.");
+
+  const res = await fetch(`/api/order_detail/?order_id=${orderId}`);
+  const data = await res.json();
+
+  const container = document.getElementById("orderDetails");
+  container.innerHTML = "";
+
+  if (res.ok && data.order) {
+    const o = data.order;
+    container.innerHTML = `
+      <div class="order-detail-card">
+        <h3>Order #${o.id}</h3>
+        <p><strong>Date:</strong> ${new Date(o.created_at).toLocaleDateString()}</p>
+        <p><strong>Status:</strong> ${o.status}</p>
+        <p><strong>Total Price:</strong> ₹${o.total_price}</p>
+        <h4>Items:</h4>
+        <ul>
+          ${o.items
+            .map(
+              (item) =>
+                `<li>${item.product.name} — ₹${item.product.price} × ${item.quantity}</li>`
+            )
+            .join("")}
+        </ul>
+        <button onclick="window.location.href='/ui/orders/'">← Back to Orders</button>
+      </div>
+    `;
+  } else {
+    container.innerHTML = "<p class='no-products'>Order not found.</p>";
+  }
+}
+
+loadOrderDetails();
+</script>
+{% endblock %}

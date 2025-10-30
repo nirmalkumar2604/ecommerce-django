@@ -1,0 +1,28 @@
+{% extends "e-com/base.html" %}
+{% block title %}Products | NK Mart{% endblock %}
+
+{% block content %}
+<div class="product-container">
+  <h2 class="section-title">🛍️ Available Products</h2>
+
+  {% if products %}
+  <div class="product-grid">
+    {% for p in products %}
+    <div class="product-card">
+      <img src="${p.image || 'https://via.placeholder.com/200'}" alt="${p.name}" />
+      <div class="product-info">
+        <h3>{{ p.name }}</h3>
+        <p class="description">{{ p.description }}</p>
+        <p class="category">Category: {{ p.category }}</p>
+        <p class="stock">Stock: {{ p.stock }}</p>
+        <p class="price">₹{{ p.price }}</p>
+        <button>Add to Cart</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="no-products">No products available right now.</p>
+  {% endif %}
+</div>
+{% endblock %}
